@@ -1,10 +1,11 @@
-from .color_style import DeepMindColor
-
 from .object import Object
+from .object import ObjectDirectory
 
-from .motion import VonNeumannMotion
-from .motion import MooreMotion
+from .motion import Motion
 
-from .maze import BaseMaze
+from .maze import Maze
 
-from .env import BaseEnv
+from .base_env import BaseEnv
+from .base_navigation_env import BaseNavigationEnv
+
+from .color_style import DeepMindColor

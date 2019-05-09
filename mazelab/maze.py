@@ -1,53 +1,41 @@
-from abc import ABC
-from abc import abstractmethod
-
-from collections import namedtuple
 import numpy as np
 
-from .object import Object
 
-
-class BaseMaze(ABC):
-    def __init__(self, **kwargs):
-        objects = self.make_objects()
-        assert all([isinstance(obj, Object) for obj in objects])
-        self.objects = namedtuple('Objects', map(lambda x: x.name, objects), defaults=objects)()
+class Maze(object):
+    def __init__(self, generator):
+        self.generator = generator
         
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-    
+        self.x = self.generator()
+        
     @property
-    @abstractmethod
     def size(self):
-        r"""Returns a pair of (height, width). """
-        pass
-        
-    @abstractmethod
-    def make_objects(self):
-        r"""Returns a list of defined objects. """
-        pass
+        return len(self.x), len(self.x[0])
     
-    def _convert(self, x, name):
-        for obj in self.objects:
-            pos = np.asarray(obj.positions)
-            x[pos[:, 0], pos[:, 1]] = getattr(obj, name, None)
+    def _to_item(self, item):
+        H, W = self.size
+        x = np.zeros([H, W]).tolist()
+        for h in range(H):
+            for w in range(W):
+                x[h][w] = getattr(self.x[h][w], item)
+                
         return x
     
     def to_name(self):
-        x = np.empty(self.size, dtype=object)
-        return self._convert(x, 'name')
+        return self._to_item('name')
     
     def to_value(self):
-        x = np.empty(self.size, dtype=int)
-        return self._convert(x, 'value')
+        return np.asarray(self._to_item('value'))
     
-    def to_rgb(self):
-        x = np.empty((*self.size, 3), dtype=np.uint8)
-        return self._convert(x, 'rgb')
+    def to_color(self):
+        return self._to_item('color')
     
     def to_impassable(self):
-        x = np.empty(self.size, dtype=bool)
-        return self._convert(x, 'impassable')
+        return self._to_item('impassable')
     
-    def __repr__(self):
-        return f'{self.__class__.__name__}{self.size}'
+    @property
+    def free_space(self):
+        x = self.to_value()
+        idx = np.where(x == self.generator.free.value)
+        idx = np.dstack(idx)[0]
+        
+        return idx
