@@ -14,13 +14,6 @@ Run the following command to install [all required dependencies](requirements.tx
 pip install -r requirements.txt
 ```
 
-- **Build-in Dijkstra solver**: For simple goal-reaching environment, one could use the build-in Dijkstra solver to compute the optimal action sequences given the current agent position and goal position. 
-
-```python
-    actions = dijkstra_solver(impassable_array, motions, start, goal)
-```
-
-
 ## Play with a maze
 
 This project was tested on both MacOS and Windows. When starting the project, put Cozmo at the entrance, then go to the directory of this project. Disable comment the cozmo.run_program(solve_simple_maze) in python file called drive_cozmo.py. When solving hard maze, place cozmo in center of a white lane with black background and  disable comment the cozmo.run_program(solve_hard_maze) after commenting out cozmo.run_program(solve_simple_maze) under drive_cozmo.py.
